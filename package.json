@@ -1,7 +1,7 @@
 {
-  "name": "fishing-game",
+  "name": "lil-bottle-games",
   "version": "1.0.0",
-  "description": "Fishing Game Discord Bot",
+  "description": "Lil Bottles Game Discord Bot",
   "main": "src/Bot.ts",
   "scripts": {
     "start": "ts-node src/Bot.ts",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/BananazTechnology/fishing-game.git"
+    "url": "git+https://github.com/BananazTechnology/LilBottlesGame.git"
   },
   "author": "Bananaz Tech",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/BananazTechnology/fishing-game/issues"
+    "url": "https://github.com/BananazTechnology/LilBottlesGame/issues"
   },
-  "homepage": "https://github.com/BananazTechnology/fishing-game#readme",
+  "homepage": "https://github.com/BananazTechnology/LilBottlesGame#readme",
   "dependencies": {
     "axios": "^0.26.1",
     "discord.js": "^13.6.0",

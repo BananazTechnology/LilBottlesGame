@@ -39,7 +39,7 @@ export class InteractionLog {
           if (data) {
             resolve(this)
           } else {
-            reject(new Error('Log Unsuccessful'))
+            reject(new Error('Log Complete Unsuccessful'))
           }
         })
         .catch((err: AxiosError) => {
@@ -79,7 +79,7 @@ export class InteractionLog {
             log.id = data.id
             resolve(log)
           } else {
-            reject(new Error('Log Complete Unsuccessful'))
+            reject(new Error('Log Unsuccessful'))
           }
         })
         .catch((err: AxiosError) => {

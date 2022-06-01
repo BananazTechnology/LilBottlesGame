@@ -34,8 +34,7 @@ export class GameResult {
     return this.image
   }
 
-  // grabs user object and updates db to match
-  private async getGameResult (win: boolean): Promise<GameResult> {
+  static async getGameResult (win: boolean): Promise<GameResult> {
 
     const db = new GameSpecificDb()
 

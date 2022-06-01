@@ -7,6 +7,7 @@ import { LogResult } from '../classes/logResult'
 import { InteractionLog } from '../classes/interactionLog'
 import { User } from '../classes/user'
 import { Interaction } from './interaction'
+import { LogStatus } from '../resources/logStatus'
 
 export abstract class Command implements ChatInputApplicationCommandData, Interaction {
   public abstract name: string;
@@ -20,7 +21,7 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
   async execute (client: Client, interaction: BaseCommandInteraction, user: User|undefined) {
     const log = InteractionLog.log(interaction)
 
-    const result = await this.run(client, interaction, user);
+    const result = await this.run(client, interaction, user).catch(() => { return new LogResult(false, LogStatus.Error, 'Error in command') });
 
     (await log).complete(result.complete)
   }

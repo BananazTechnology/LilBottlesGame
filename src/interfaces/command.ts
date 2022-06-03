@@ -23,6 +23,6 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
 
     const result = await this.run(client, interaction, user).catch(() => { return new LogResult(false, LogStatus.Error, 'Error in command') });
 
-    (await log).complete(result.complete)
+    (await log).complete(result)
   }
 }

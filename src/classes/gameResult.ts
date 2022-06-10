@@ -1,5 +1,3 @@
-import axios from 'axios'
-import { BaseCommandInteraction } from 'discord.js'
 import { RowDataPacket } from 'mysql2';
 import { GameSpecificDb } from '../database/db'
 

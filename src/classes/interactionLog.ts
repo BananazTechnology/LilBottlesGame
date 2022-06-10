@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import { BaseCommandInteraction } from 'discord.js'
+import { LogResult } from './logResult'
 
 export class InteractionLog {
   // userInteraction attributes. Should always be private as updating information will need to be reflected in the db
@@ -11,9 +12,12 @@ export class InteractionLog {
   private subCommand: string|undefined;
   private options: string = '';
   private success: boolean = false;
+  private status?: string;
+  private message?: string;
+  private timestamp?: string;
 
   // constructor is private. Code should use a provided function
-  private constructor (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string = '', success: boolean = false) {
+  private constructor (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string = '', success: boolean = false, status?: string, message?: string, timestamp?: string) {
     this.id = id
     this.user = user
     this.server = server
@@ -22,11 +26,16 @@ export class InteractionLog {
     this.subCommand = subCommand
     this.options = options
     this.success = success
+    this.status = status
+    this.message = message
+    this.timestamp = timestamp
   }
 
   // logs action completion
-  async complete (success: boolean): Promise<InteractionLog> {
-    this.success = success
+  async complete (result: LogResult): Promise<InteractionLog> {
+    this.success = result.complete
+    this.status = result.status
+    this.message = result.message
 
     const reqURL = `${process.env.userAPI}/log`
     console.debug(`Request to UserAPI: PUT - ${reqURL}`)

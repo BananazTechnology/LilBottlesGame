@@ -11,14 +11,14 @@ export class Pause extends Command {
   type = 'CHAT_INPUT'
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
-    const gameState = await GameState.getGameState();
-    if(gameState.getActive() == true) {
+    const gameState = await GameState.getGameState()
+    if (gameState.getActive() === true) {
       try {
         await interaction.deferReply()
         GameState.pauseGame()
         const embed = new MessageEmbed()
-        .setColor('#FFA500')
-        .setTitle(`Claw Game Unplugged`)
+          .setColor('#FFA500')
+          .setTitle('Claw Game Unplugged')
 
         await interaction.followUp({
           embeds: [embed]
@@ -33,8 +33,7 @@ export class Pause extends Command {
           reject(new LogResult(false, LogStatus.Error, 'Pause Command Error'))
         })
       }
-    }
-    else {
+    } else {
       await interaction.reply({
         content: 'The claw machine is already off!'
       })

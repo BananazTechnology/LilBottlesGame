@@ -1,5 +1,4 @@
-
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket } from 'mysql2'
 import { GameSpecificDb } from '../database/db'
 
 export class GameState {
@@ -40,53 +39,53 @@ export class GameState {
       WHERE id = 1;`
     const result = await db.query(queryString)
     return new Promise((resolve, reject) => {
-        try {
-          const row = (<RowDataPacket[]> result)
-          if (row) {
-            const gameState: GameState = new GameState(row[0].id, row[0].totalWinners, row[0].currentWinners, row[0].active)
-            resolve(gameState)
-          } else {
-            resolve(undefined)
-          }
-        } catch {
-          reject(new Error('DB Connection OR Query Issue'))
+      try {
+        const row = (<RowDataPacket[]> result)
+        if (row) {
+          const gameState: GameState = new GameState(row[0].id, row[0].totalWinners, row[0].currentWinners, !!row[0].active)
+          resolve(gameState)
+        } else {
+          resolve(undefined)
         }
-      })
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
   }
 
   static async pauseGame (): Promise<Boolean> {
     try {
-    const db = new GameSpecificDb()
-    const queryString = `
+      const db = new GameSpecificDb()
+      const queryString = `
       UPDATE gameState
       SET active = false 
       WHERE id = 1;`
-    await db.query(queryString)
-    return new Promise((resolve, reject) => {
-        resolve(true);
+      await db.query(queryString)
+      return new Promise((resolve, reject) => {
+        resolve(true)
       })
     } catch {
-        return new Promise((resolve, reject) => {
-            resolve(false);
-        })
+      return new Promise((resolve, reject) => {
+        resolve(false)
+      })
     }
   }
 
   static async resumeGame (): Promise<Boolean> {
     try {
-    const db = new GameSpecificDb()
-    const queryString = `
+      const db = new GameSpecificDb()
+      const queryString = `
       UPDATE gameState
       SET active = true 
       WHERE id = 1;`
-    await db.query(queryString)
-    return new Promise((resolve, reject) => {
-        resolve(true);
+      await db.query(queryString)
+      return new Promise((resolve, reject) => {
+        resolve(true)
       })
     } catch {
-        return new Promise((resolve, reject) => {
-            resolve(false);
-        })
+      return new Promise((resolve, reject) => {
+        resolve(false)
+      })
     }
   }
 }

@@ -11,14 +11,14 @@ export class Resume extends Command {
   type = 'CHAT_INPUT'
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
-    const gameState = await GameState.getGameState();
-    if(gameState.getActive() == false) {
+    const gameState = await GameState.getGameState()
+    if (gameState.getActive() === false) {
       try {
         await interaction.deferReply()
         GameState.resumeGame()
         const embed = new MessageEmbed()
-        .setColor('#FFA500')
-        .setTitle(`Claw Game Resumed`)
+          .setColor('#FFA500')
+          .setTitle('Claw Game Resumed')
 
         await interaction.followUp({
           embeds: [embed]
@@ -33,8 +33,7 @@ export class Resume extends Command {
           reject(new LogResult(false, LogStatus.Error, 'Resume Command Error'))
         })
       }
-    }
-    else {
+    } else {
       await interaction.reply({
         content: 'The claw machine is already on!'
       })

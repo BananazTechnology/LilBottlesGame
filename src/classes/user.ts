@@ -2,9 +2,7 @@ import axios from 'axios'
 import { BaseCommandInteraction } from 'discord.js'
 import { GameSpecificDb } from '../database/db'
 import * as Excel from 'exceljs'
-import { RowDataPacket } from 'mysql2';
-import * as fs from 'fs';
-
+import { RowDataPacket } from 'mysql2'
 
 export class User {
   // User attributes. Should always be private as updating information will need to be reflected in the db
@@ -150,52 +148,51 @@ export class User {
       INSERT INTO winners 
       (discordname, discordid, wallet) 
       VALUES(${dname}, ${did},${dwallet});`
-    await db.query(queryString);
+    await db.query(queryString)
     const updateString = `
       UPDATE gameState
       set currentWinners =
       (select count(*) from winners)`
-    await db.query(updateString);
+    await db.query(updateString)
   }
 
-  static async getWinners (){
+  static async getWinners () {
     const db = new GameSpecificDb()
     const queryString = `
       SELECT * FROM winners`
-    const winnerList = await db.query(queryString);
-    const workbook = new Excel.Workbook();
-    workbook.creator = 'Wock';
-    let winnerSheet = workbook.addWorksheet('Winners');
-    winnerSheet.columns =[
-      { header: 'Order', key: 'idwinners'},
-      { header: 'Discord Name', key: 'discordname'},
-      { header: 'Discord Id', key: 'discordid'},
-      { header: 'Wallet', key: 'wallet'},
+    const winnerList = await db.query(queryString)
+    const workbook = new Excel.Workbook()
+    workbook.creator = 'Wock'
+    const winnerSheet = workbook.addWorksheet('Winners')
+    winnerSheet.columns = [
+      { header: 'Order', key: 'idwinners' },
+      { header: 'Discord Name', key: 'discordname' },
+      { header: 'Discord Id', key: 'discordid' },
+      { header: 'Wallet', key: 'wallet' }
     ]
     try {
       const row = (<RowDataPacket[]> winnerList)
       if (row && row.length) {
-        let i  = 0;
-        while(row[i]) {
-
-          //const newUser = new User(row[i].idwinners, row[i].discordid, row[i].discordname, row[i].wallet )
-          //let emptyArray = [];
-          //emptyArray.push(row[i])
+        let i = 0
+        while (row[i]) {
+          // const newUser = new User(row[i].idwinners, row[i].discordid, row[i].discordname, row[i].wallet )
+          // let emptyArray = [];
+          // emptyArray.push(row[i])
           winnerSheet.addRow({
             idwinners: row[i].idwinners,
             discordname: row[i].discordname,
             discordid: row[i].discordname,
-            wallet: row[i].wallet,
+            wallet: row[i].wallet
 
-          });
-          i++;
+          })
+          i++
         }
-      } 
+      }
     } catch {
 
     }
-    workbook.xlsx.writeFile('Winners.xlsx');
-    console.log('gets here');
+    workbook.xlsx.writeFile('Winners.xlsx')
+    console.log('gets here')
   }
 
   static async getGameState () {
@@ -203,7 +200,7 @@ export class User {
     const queryString = `
       SELECT * FROM gameState 
       WHERE id = 1;`
-    const result = await db.query(queryString);
+    const result = await db.query(queryString)
     return new Promise((resolve, reject) => {
       try {
         resolve(result)
@@ -220,7 +217,6 @@ export class User {
   //   const lastRan = await db.query(queryString);
   //   return new Promise((resolve, reject) => {
   //     resolve(true);
-      
 
   //   })
   // }

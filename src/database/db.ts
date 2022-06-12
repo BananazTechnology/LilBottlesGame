@@ -39,4 +39,3 @@ export class GameSpecificDb {
     return str
   }
 }
-

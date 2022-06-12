@@ -1,5 +1,4 @@
 import { BaseCommandInteraction, Client } from 'discord.js'
-// import { SubCommand } from '../../interfaces/subCommand'
 import { Command } from '../../interfaces/command'
 import { View } from './profile-view'
 import { Create } from './profile-create'

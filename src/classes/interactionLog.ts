@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { BaseCommandInteraction } from 'discord.js'
 import { LogResult } from './logResult'
+import { User } from './user'
 
 export class InteractionLog {
   // userInteraction attributes. Should always be private as updating information will need to be reflected in the db
@@ -29,6 +30,10 @@ export class InteractionLog {
     this.status = status
     this.message = message
     this.timestamp = timestamp
+  }
+
+  getTimestamp () {
+    return this.timestamp
   }
 
   // logs action completion
@@ -93,6 +98,29 @@ export class InteractionLog {
         })
         .catch((err: AxiosError) => {
           // console.log(err)
+          reject(err)
+        })
+    })
+  }
+
+  // gets last time user ran a specific command
+  static async getLastByCommand (user: User, interaction?: BaseCommandInteraction): Promise<InteractionLog|undefined> {
+    const reqURL = `${process.env.userAPI}/log/lastSuccess/${user.getId()}/${interaction.commandName}`
+    console.debug(`Request to UserAPI: GET - ${reqURL}`)
+
+    return new Promise((resolve, reject) => {
+      axios
+        .get(reqURL)
+        .then(res => {
+          const data = res.data.data
+          if (data) {
+            const log = new InteractionLog(data.id, data.user, data.server, data.channel, data.command, data.subCommand, data.options, !!data.success, data.status, data.message, data.timestamp)
+            resolve(log)
+          } else {
+            resolve(undefined)
+          }
+        })
+        .catch(err => {
           reject(err)
         })
     })

@@ -12,7 +12,7 @@ export class Pause extends Command {
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     const gameState = await GameState.getGameState()
-    if (gameState.getActive() === true) {
+    if (gameState && gameState.getActive() === true) {
       try {
         await interaction.deferReply()
         GameState.pauseGame()

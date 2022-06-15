@@ -10,7 +10,7 @@ import { Interaction } from './interaction'
 export abstract class SubCommand implements ApplicationCommandSubCommandData, Interaction {
   public abstract name: string;
   public abstract description: string;
-  public abstract type;
+  public abstract type: any;
 
   protected cooldown?: number = undefined;
 

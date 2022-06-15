@@ -32,7 +32,7 @@ export class GameState {
     return this.totalWinners
   }
 
-  static async getGameState (): Promise<GameState> {
+  static async getGameState (): Promise<GameState|undefined> {
     const db = new GameSpecificDb()
     const queryString = `
       SELECT * FROM gameState 

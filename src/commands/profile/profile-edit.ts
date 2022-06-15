@@ -27,18 +27,31 @@ export class Edit extends SubCommand {
     }
 
     try {
-      await user.setWalletAddress(wallet)
+      if (user) {
+        await user.setWalletAddress(wallet)
 
-      const content = 'User Updated'
+        const content = 'User Updated'
 
-      await interaction.followUp({
-        ephemeral: true,
-        content
-      })
+        await interaction.followUp({
+          ephemeral: true,
+          content
+        })
 
-      return new Promise((resolve, reject) => {
-        resolve(new LogResult(true, LogStatus.Success, 'Permit Edit Completed Successfully'))
-      })
+        return new Promise((resolve, reject) => {
+          resolve(new LogResult(true, LogStatus.Success, 'Permit Edit Completed Successfully'))
+        })
+      } else {
+        const content = 'Permit Registry closed! Talk to Papa Wock!'
+
+        await interaction.followUp({
+          ephemeral: true,
+          content
+        })
+
+        return new Promise((resolve, reject) => {
+          reject(new LogResult(false, LogStatus.Error, 'User was not provided'))
+        })
+      }
     } catch (err) {
       const content = 'Permit Registry closed! Talk to Papa Wock!'
 

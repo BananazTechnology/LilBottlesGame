@@ -43,15 +43,27 @@ export class User {
 
   // checks to see if user has specific role
   async checkRole (role: bigint, interaction: BaseCommandInteraction): Promise<boolean> {
-    const discordRole = await interaction.guild.roles.fetch(`${role}`)
-    const members = discordRole.members
-    return new Promise((resolve, reject) => {
-      if (members.find(m => m.id === interaction.user.id)) {
-        resolve(true)
+    if (interaction.guild) {
+      const discordRole = await interaction.guild.roles.fetch(`${role}`)
+      if (discordRole) {
+        const members = discordRole.members
+        return new Promise((resolve, reject) => {
+          if (members.find(m => m.id === interaction.user.id)) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        })
       } else {
-        resolve(false)
+        return new Promise((resolve, reject) => {
+          resolve(false)
+        })
       }
-    })
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(false)
+      })
+    }
   }
 
   // grabs user object and updates db to match

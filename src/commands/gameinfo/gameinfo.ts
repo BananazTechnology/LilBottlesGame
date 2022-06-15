@@ -21,9 +21,9 @@ export class GameInfo extends Command {
       const embed = new MessageEmbed()
         .setColor('#FFA500')
         .setTitle('Claw Game Info')
-        .addField('Active:', `${gameState.getActive() === true ? 'True' : 'False'}`, false)
-        .addField('Current Winners:', `${gameState.getCurrentWinners()}`, false)
-        .addField('Total Winners:', `${gameState.getTotalWinners()}`, false)
+        .addField('Active:', `${gameState?.getActive() === true ? 'True' : 'False'}`, false)
+        .addField('Current Winners:', `${gameState?.getCurrentWinners()}`, false)
+        .addField('Total Winners:', `${gameState?.getTotalWinners()}`, false)
         .addField('Win %:', `${((1 / dropScale) * 100).toFixed(0)}%`, false)
       await interaction.followUp({
         embeds: [embed]

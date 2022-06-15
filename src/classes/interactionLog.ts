@@ -7,7 +7,7 @@ export class InteractionLog {
   // userInteraction attributes. Should always be private as updating information will need to be reflected in the db
   private id: number;
   private user: string;
-  private server: string;
+  private server: string|null;
   private channel: string;
   private command: string;
   private subCommand: string|undefined;
@@ -18,7 +18,7 @@ export class InteractionLog {
   private timestamp?: string;
 
   // constructor is private. Code should use a provided function
-  private constructor (id: number, user: string, server: string, channel: string, command: string, subCommand: string|undefined, options: string = '', success: boolean = false, status?: string, message?: string, timestamp?: string) {
+  private constructor (id: number, user: string, server: string|null, channel: string, command: string, subCommand: string|undefined, options: string = '', success: boolean = false, status?: string, message?: string, timestamp?: string) {
     this.id = id
     this.user = user
     this.server = server
@@ -69,10 +69,12 @@ export class InteractionLog {
     interaction.options.data.forEach(option => {
       if (option.type === 'SUB_COMMAND') {
         log.subCommand = option.name
-        option.options.forEach(option => {
-          log.options += `#${option.name}: `
-          log.options += `'${option.value}' `
-        })
+        if (option.options) {
+          option.options.forEach(option => {
+            log.options += `#${option.name}: `
+            log.options += `'${option.value}' `
+          })
+        }
       } else {
         log.options += `#${option.name}: `
         log.options += `'${option.value}' `
@@ -104,7 +106,7 @@ export class InteractionLog {
   }
 
   // gets last time user ran a specific command
-  static async getLastByCommand (user: User, interaction?: BaseCommandInteraction): Promise<InteractionLog|undefined> {
+  static async getLastByCommand (user: User, interaction: BaseCommandInteraction): Promise<InteractionLog|undefined> {
     const reqURL = `${process.env.userAPI}/log/lastSuccess/${user.getId()}/${interaction.commandName}`
     console.debug(`Request to UserAPI: GET - ${reqURL}`)
 

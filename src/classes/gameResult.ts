@@ -1,4 +1,4 @@
-import { RowDataPacket } from 'mysql2';
+import { RowDataPacket } from 'mysql2'
 import { GameSpecificDb } from '../database/db'
 
 export class GameResult {
@@ -32,8 +32,7 @@ export class GameResult {
     return this.image
   }
 
-  static async getGameResult (win: boolean): Promise<GameResult> {
-
+  static async getGameResult (win: boolean): Promise<GameResult|undefined> {
     const db = new GameSpecificDb()
 
     const queryString = `
@@ -46,17 +45,17 @@ export class GameResult {
     const result = await db.query(queryString)
 
     return new Promise((resolve, reject) => {
-        try {
-          const row = (<RowDataPacket> result)[0]
-          if (row) {
-            const gameResult: GameResult = new GameResult(row.id, row.result, row.description, row.image)
-            resolve(gameResult)
-          } else {
-            resolve(undefined)
-          }
-        } catch {
-          reject(new Error('DB Connection OR Query Issue'))
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const gameResult: GameResult = new GameResult(row.id, row.result, row.description, row.image)
+          resolve(gameResult)
+        } else {
+          resolve(undefined)
         }
-      })
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
   }
 }

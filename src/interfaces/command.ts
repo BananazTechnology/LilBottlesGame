@@ -22,26 +22,29 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
     const log = InteractionLog.log(interaction)
 
     let result: LogResult = new LogResult(false, LogStatus.Incomplete, 'Error in command')
-
+    console.log(`COOLDOWN: ${this.cooldown}`)
     if (this.cooldown) {
       const lastLog = await InteractionLog.getLastByCommand(user, interaction)
-      const cooldownNumber = (Number(Date.parse(lastLog.getTimestamp())) / 1000) + (this.cooldown * 60)
-      const currentNumber = Number(Date.parse(new Date().toUTCString())) / 1000
+      if(lastLog) {
+        const cooldownNumber = (Number(Date.parse(lastLog.getTimestamp())) / 1000) + (this.cooldown * 60)
+        const currentNumber = Number(Date.parse(new Date().toUTCString())) / 1000
 
-      if (cooldownNumber - currentNumber <= 0) {
-        result = await this.runCmd(client, interaction, user)
-      } else {
-        interaction.reply({
-          content: `Easy there hotpocket, your cooldown aint over! You can run this command again <t:${((Number(Date.parse(lastLog.getTimestamp())) / 1000) + (this.cooldown * 60))}:R>`
-        })
-        result = new LogResult(false, LogStatus.Warn, 'Player has not reached cooldown')
+        if (cooldownNumber - currentNumber <= 0) {
+          result = await this.runCmd(client, interaction, user)
+        } else {
+          interaction.reply({
+            content: `Easy there hotpocket, your cooldown aint over! You can run this command again <t:${((Number(Date.parse(lastLog.getTimestamp())) / 1000) + (this.cooldown * 60))}:R>`
+          })
+          result = new LogResult(false, LogStatus.Warn, 'Player has not reached cooldown')
+        }
       }
-    } else {
-      result = await this.runCmd(client, interaction, user)
-    }
-
-    console.log(`${user.getDiscordName()} ran ${this.name}: ${result.message}`);
-    (await log).complete(result)
+      } else {
+        result = await this.runCmd(client, interaction, user)
+      }
+      
+      console.log(result)
+      console.log(`${user.getDiscordName()} ran ${this.name}: ${result.message}`);
+      (await log).complete(result)
   }
 
   private async runCmd (client, interaction, user) {

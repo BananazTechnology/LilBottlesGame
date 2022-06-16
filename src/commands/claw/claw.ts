@@ -20,6 +20,16 @@ export class Claw extends Command {
     await interaction.deferReply()
 
     const gameState = await GameState.getGameState()
+
+    if (!gameState || !user) {
+      await interaction.followUp({
+        content: 'The dang thingermajig no worky work. We must INVESTIGATE!'
+      })
+      return new Promise((resolve, reject) => {
+        resolve(new LogResult(true, LogStatus.Error, 'User or game state not loded correctly'))
+      })
+    }
+
     if (gameState.getCurrentWinners() >= gameState.getTotalWinners()) {
       await interaction.followUp({
         content: 'The game has completed. Thanks for playing!'
@@ -43,27 +53,53 @@ export class Claw extends Command {
         // win
         if (randNum === (dropScale - 1)) {
           result = await GameResult.getGameResult(true)
-          console.log(result.getResult())
-          User.createWinner(user)
+          if (result) {
+            console.log(result.getResult())
+            User.createWinner(user)
+          } else {
+            console.log('Result (true) was null')
+          }
         } else { // lose
           result = await GameResult.getGameResult(false)
-          console.log(result.getResult())
+          if (result) {
+            console.log(result.getResult())
+          } else {
+            console.log('Result (false) was null')
+          }
         }
-        const embed = new MessageEmbed()
-          .setColor('#FFA500')
-          .setImage(result.getImage())
-          .setTitle(result.getResult() === 1 ? ':thumbsup:' : ':thumbsdown:')
-          .setDescription(result.getDescription())
 
-        console.log(JSON.stringify(result))
+        if (result) {
+          const embed = new MessageEmbed()
+            .setColor('#FFA500')
+            .setDescription(result.getDescription())
 
-        await interaction.followUp({
-          embeds: [embed]
-        })
+          const image = result.getImage()
+          if (image) {
+            embed.setImage(image)
+          }
 
-        return new Promise((resolve, reject) => {
-          resolve(new LogResult(true, LogStatus.Success, 'Claw Command Completed Successfully'))
-        })
+          const title = result.getResult()
+          if (title) {
+            embed.setTitle(title === true ? ':thumbsup:' : ':thumbsdown:')
+          }
+
+          console.log(JSON.stringify(result))
+
+          await interaction.followUp({
+            embeds: [embed]
+          })
+
+          return new Promise((resolve, reject) => {
+            resolve(new LogResult(true, LogStatus.Success, 'Claw Command Completed Successfully'))
+          })
+        } else {
+          await interaction.followUp({
+            content: 'Well thats not supposed to happen. Try again and well look into this issue!'
+          })
+          return new Promise((resolve, reject) => {
+            resolve(new LogResult(true, LogStatus.Error, 'result not loded correctly'))
+          })
+        }
       } catch (e) {
         console.log(e)
         return new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { BaseCommandInteraction } from 'discord.js'
-import { GameSpecificDb } from '../database/db'
+import { checkString, dbQuery } from '../database/db'
 import * as Excel from 'exceljs'
 import { RowDataPacket } from 'mysql2'
 
@@ -43,15 +43,27 @@ export class User {
 
   // checks to see if user has specific role
   async checkRole (role: bigint, interaction: BaseCommandInteraction): Promise<boolean> {
-    const discordRole = await interaction.guild.roles.fetch(`${role}`)
-    const members = discordRole.members
-    return new Promise((resolve, reject) => {
-      if (members.find(m => m.id === interaction.user.id)) {
-        resolve(true)
+    if (interaction.guild) {
+      const discordRole = await interaction.guild.roles.fetch(`${role}`)
+      if (discordRole) {
+        const members = discordRole.members
+        return new Promise((resolve, reject) => {
+          if (members.find(m => m.id === interaction.user.id)) {
+            resolve(true)
+          } else {
+            resolve(false)
+          }
+        })
       } else {
-        resolve(false)
+        return new Promise((resolve, reject) => {
+          resolve(false)
+        })
       }
-    })
+    } else {
+      return new Promise((resolve, reject) => {
+        resolve(false)
+      })
+    }
   }
 
   // grabs user object and updates db to match
@@ -140,27 +152,25 @@ export class User {
   }
 
   static async createWinner (user: User) {
-    const db = new GameSpecificDb()
-    const dname = GameSpecificDb.checkString(user.discordName)
-    const did = GameSpecificDb.checkString(user.discordID)
-    const dwallet = GameSpecificDb.checkString(user.walletAddress)
+    const dname = checkString(user.discordName)
+    const did = checkString(user.discordID)
+    const dwallet = checkString(user.walletAddress)
     const queryString = `
       INSERT INTO winners 
       (discordname, discordid, wallet) 
       VALUES(${dname}, ${did},${dwallet});`
-    await db.query(queryString)
+    await dbQuery(queryString)
     const updateString = `
       UPDATE gameState
       set currentWinners =
       (select count(*) from winners)`
-    await db.query(updateString)
+    await dbQuery(updateString)
   }
 
   static async getWinners () {
-    const db = new GameSpecificDb()
     const queryString = `
       SELECT * FROM winners`
-    const winnerList = await db.query(queryString)
+    const winnerList = await dbQuery(queryString)
     const workbook = new Excel.Workbook()
     workbook.creator = 'Wock'
     const winnerSheet = workbook.addWorksheet('Winners')
@@ -196,11 +206,10 @@ export class User {
   }
 
   static async getGameState () {
-    const db = new GameSpecificDb()
     const queryString = `
       SELECT * FROM gameState 
       WHERE id = 1;`
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
     return new Promise((resolve, reject) => {
       try {
         resolve(result)
@@ -214,7 +223,7 @@ export class User {
   //   const db = new GameSpecificDb()
   //   const queryString = `
   //     SELECT * FROM winners`
-  //   const lastRan = await db.query(queryString);
+  //   const lastRan = await dbQuery(queryString);
   //   return new Promise((resolve, reject) => {
   //     resolve(true);
 

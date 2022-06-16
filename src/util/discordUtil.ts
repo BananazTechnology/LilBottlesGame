@@ -17,7 +17,7 @@ export class DiscordUtil {
 
   static getOption (interaction: BaseCommandInteraction, name: string) {
     try {
-      return interaction.options.get(name).value
+      return interaction.options.get(name)?.value
     } catch (err) {
       return undefined
     }

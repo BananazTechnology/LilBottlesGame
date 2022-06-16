@@ -9,7 +9,7 @@ import { Interaction } from './interaction'
 export abstract class Select implements ApplicationCommandSubCommandData, Interaction {
   public abstract name: string;
   public abstract description: string;
-  public abstract type;
+  public abstract type: any;
 
   protected cooldown?: number = undefined;
 

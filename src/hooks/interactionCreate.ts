@@ -84,7 +84,7 @@ const handleButtonClick = async (client: Client, interaction: ButtonInteraction)
   }
 }
 
-function getUserIssue (interaction, err) {
+function getUserIssue (interaction: any, err: any) {
   console.error(err.message)
   const content = 'Banana Police question your ID. Please contact LT Wock!'
 

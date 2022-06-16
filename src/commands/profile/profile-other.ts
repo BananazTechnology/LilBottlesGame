@@ -26,24 +26,41 @@ export class Other extends SubCommand {
       id = `${interaction.options.get('id')?.value}`
     }
 
-    try {
-      const user = await User.getByDiscordId(id)
+    if (id) {
+      try {
+        const user = await User.getByDiscordId(id)
 
-      const embed = new MessageEmbed()
-        .setColor('#FFA500')
-        .setTitle(`Profile: ${user.getDiscordName()}`)
-      embed.addField('Wallet Address:', `\`${user.getWalletAddress()}\``, false)
-      const imgUser = await client.users.fetch(id)
-      embed.setThumbnail(imgUser.avatarURL({ dynamic: true }))
+        const embed = new MessageEmbed()
+          .setColor('#FFA500')
+          .setTitle(`Profile: ${user.getDiscordName()}`)
+        embed.addField('Wallet Address:', `\`${user.getWalletAddress()}\``, false)
+        const imgUser = await client.users.fetch(id)
 
-      await interaction.followUp({
-        embeds: [embed]
-      })
+        const image = imgUser.avatarURL({ dynamic: true })
+        if (image) {
+          embed.setThumbnail(image)
+        }
 
-      return new Promise((resolve, reject) => {
-        resolve(new LogResult(true, LogStatus.Success, 'Permit Other completed Successfully'))
-      })
-    } catch (err) {
+        await interaction.followUp({
+          embeds: [embed]
+        })
+
+        return new Promise((resolve, reject) => {
+          resolve(new LogResult(true, LogStatus.Success, 'Permit Other completed Successfully'))
+        })
+      } catch (err) {
+        const content = 'You dont have a permit yet! Use /profile create!'
+
+        await interaction.followUp({
+          ephemeral: true,
+          content
+        })
+
+        return new Promise((resolve, reject) => {
+          reject(new LogResult(false, LogStatus.Error, 'General Permit Other Command Error'))
+        })
+      }
+    } else {
       const content = 'You dont have a permit yet! Use /profile create!'
 
       await interaction.followUp({
@@ -52,7 +69,7 @@ export class Other extends SubCommand {
       })
 
       return new Promise((resolve, reject) => {
-        reject(new LogResult(false, LogStatus.Error, 'General Permit Other Command Error'))
+        resolve(new LogResult(false, LogStatus.Error, 'Issue getting id'))
       })
     }
   }

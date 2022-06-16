@@ -14,9 +14,13 @@ export class View extends SubCommand {
     try {
       const embed = new MessageEmbed()
         .setColor('#FFA500')
-        .setTitle(`Profile: ${user.getDiscordName()}`)
-      embed.addField('Wallet Address:', `\`${user.getWalletAddress()}\``, false)
-      embed.setThumbnail(interaction.user.avatarURL({ dynamic: true }))
+        .setTitle(`Profile: ${user?.getDiscordName()}`)
+      embed.addField('Wallet Address:', `\`${user?.getWalletAddress()}\``, false)
+
+      const image = interaction.user.avatarURL({ dynamic: true })
+      if (image) {
+        embed.setThumbnail(image)
+      }
 
       await interaction.followUp({
         embeds: [embed]

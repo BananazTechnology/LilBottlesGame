@@ -12,7 +12,7 @@ export class Resume extends Command {
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     const gameState = await GameState.getGameState()
-    if (gameState.getActive() === false) {
+    if (gameState?.getActive() === false) {
       try {
         await interaction.deferReply()
         GameState.resumeGame()

@@ -1,5 +1,5 @@
-import { RowDataPacket } from 'mysql2';
-import { GameSpecificDb } from '../database/db'
+import { RowDataPacket } from 'mysql2'
+import { dbQuery } from '../database/db'
 
 export class GameResult {
   // User attributes. Should always be private as updating information will need to be reflected in the db
@@ -32,10 +32,7 @@ export class GameResult {
     return this.image
   }
 
-  static async getGameResult (win: boolean): Promise<GameResult> {
-
-    const db = new GameSpecificDb()
-
+  static async getGameResult (win: boolean): Promise<GameResult|undefined> {
     const queryString = `
       SELECT c.id, c.result, c.description, c.image
       FROM clawMachineOutput AS c
@@ -43,20 +40,20 @@ export class GameResult {
       ORDER BY RAND()
       LIMIT 1`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
-        try {
-          const row = (<RowDataPacket> result)[0]
-          if (row) {
-            const gameResult: GameResult = new GameResult(row.id, row.result, row.description, row.image)
-            resolve(gameResult)
-          } else {
-            resolve(undefined)
-          }
-        } catch {
-          reject(new Error('DB Connection OR Query Issue'))
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          const gameResult: GameResult = new GameResult(row.id, row.result, row.description, row.image)
+          resolve(gameResult)
+        } else {
+          resolve(undefined)
         }
-      })
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
   }
 }

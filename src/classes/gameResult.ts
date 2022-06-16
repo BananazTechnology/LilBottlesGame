@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2'
-import { GameSpecificDb } from '../database/db'
+import { dbQuery } from '../database/db'
 
 export class GameResult {
   // User attributes. Should always be private as updating information will need to be reflected in the db
@@ -33,8 +33,6 @@ export class GameResult {
   }
 
   static async getGameResult (win: boolean): Promise<GameResult|undefined> {
-    const db = new GameSpecificDb()
-
     const queryString = `
       SELECT c.id, c.result, c.description, c.image
       FROM clawMachineOutput AS c
@@ -42,7 +40,7 @@ export class GameResult {
       ORDER BY RAND()
       LIMIT 1`
 
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
 
     return new Promise((resolve, reject) => {
       try {

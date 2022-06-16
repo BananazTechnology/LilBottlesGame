@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2'
-import { GameSpecificDb } from '../database/db'
+import { dbQuery } from '../database/db'
 
 export class GameState {
   // User attributes. Should always be private as updating information will need to be reflected in the db
@@ -33,11 +33,10 @@ export class GameState {
   }
 
   static async getGameState (): Promise<GameState|undefined> {
-    const db = new GameSpecificDb()
     const queryString = `
       SELECT * FROM gameState 
       WHERE id = 1;`
-    const result = await db.query(queryString)
+    const result = await dbQuery(queryString)
     return new Promise((resolve, reject) => {
       try {
         const row = (<RowDataPacket[]> result)
@@ -55,12 +54,11 @@ export class GameState {
 
   static async pauseGame (): Promise<Boolean> {
     try {
-      const db = new GameSpecificDb()
       const queryString = `
       UPDATE gameState
       SET active = false 
       WHERE id = 1;`
-      await db.query(queryString)
+      await dbQuery(queryString)
       return new Promise((resolve, reject) => {
         resolve(true)
       })
@@ -73,12 +71,11 @@ export class GameState {
 
   static async resumeGame (): Promise<Boolean> {
     try {
-      const db = new GameSpecificDb()
       const queryString = `
       UPDATE gameState
       SET active = true 
       WHERE id = 1;`
-      await db.query(queryString)
+      await dbQuery(queryString)
       return new Promise((resolve, reject) => {
         resolve(true)
       })

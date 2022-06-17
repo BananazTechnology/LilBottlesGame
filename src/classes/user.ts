@@ -155,10 +155,11 @@ export class User {
     const dname = checkString(user.discordName)
     const did = checkString(user.discordID)
     const dwallet = checkString(user.walletAddress)
+    const uid = user.getId()
     const queryString = `
       INSERT INTO winners 
-      (discordname, discordid, wallet) 
-      VALUES(${dname}, ${did},${dwallet});`
+      (discordname, discordid, wallet, userID) 
+      VALUES(${dname}, ${did},${dwallet}, ${uid});`
     await dbQuery(queryString)
     const updateString = `
       UPDATE gameState

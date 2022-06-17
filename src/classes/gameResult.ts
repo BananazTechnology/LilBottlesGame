@@ -56,4 +56,26 @@ export class GameResult {
       }
     })
   }
+
+  static async getCount (): Promise<Number> {
+    const queryString = `
+      SELECT COUNT(*) as count
+      FROM clawMachineOutput AS c
+      WHERE c.result = 1`
+
+    const result = await dbQuery(queryString)
+
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)[0]
+        if (row) {
+          resolve(row.count)
+        } else {
+          resolve(0)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
+  }
 }

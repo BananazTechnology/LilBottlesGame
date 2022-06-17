@@ -7,6 +7,7 @@ import { LogResult } from '../../classes/logResult'
 import { LogStatus } from '../../resources/logStatus'
 import * as dotenv from 'dotenv'
 import path from 'path'
+import { InventoryItem } from '../../classes/inventory'
 
 dotenv.config({ path: path.resolve('./config.env') })
 
@@ -14,7 +15,7 @@ export class Claw extends Command {
   name = 'claw'
   description = 'Try your chances at the Little Bottles Claw Machine!'
   type = 'CHAT_INPUT'
-  cooldown = 2
+  cooldown = .01
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     await interaction.deferReply()
@@ -55,16 +56,19 @@ export class Claw extends Command {
           result = await GameResult.getGameResult(true)
           if (result) {
             console.log(result.getResult())
-            User.createWinner(user)
+            InventoryItem.insertInventory(user.getId(),result.getId())
+            if(await InventoryItem.checkWinner(user) == true){
+              User.createWinner(user)
+            }
           } else {
-            console.log('Result (true) was null')
           }
-        } else { // lose
+        } 
+        // lose
+        else {
           result = await GameResult.getGameResult(false)
           if (result) {
             console.log(result.getResult())
           } else {
-            console.log('Result (false) was null')
           }
         }
 
@@ -79,9 +83,8 @@ export class Claw extends Command {
           }
 
           const title = result.getResult()
-          if (title) {
-            embed.setTitle(title === true ? ':thumbsup:' : ':thumbsdown:')
-          }
+          embed.setTitle(Boolean(title) === true ? 'CONGRATS!' : 'SORRY! COME BACK SOON!');
+          embed.setThumbnail(Boolean(title) === true ? `https://raw.githubusercontent.com/BananazTechnology/client-assets/main/lilBottles/claw_near.png` : `https://raw.githubusercontent.com/BananazTechnology/client-assets/main/lilBottles/claw_far.png`);
 
           console.log(JSON.stringify(result))
 

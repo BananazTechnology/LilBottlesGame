@@ -15,7 +15,8 @@ export abstract class Button implements ApplicationCommandSubCommandData, Intera
 
   abstract run: (client: Client, interaction: ButtonInteraction, user: User|undefined) => void;
 
-  execute (client: Client, interaction: ButtonInteraction, user: User|undefined) {
+  async execute (client: Client, interaction: ButtonInteraction) {
+    const user = await User.getByDiscordId(interaction.user.id)
     this.run(client, interaction, user)
   }
 }

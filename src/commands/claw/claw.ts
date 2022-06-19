@@ -15,6 +15,7 @@ export class Claw extends Command {
   description = 'Try your chances at the Little Bottles Claw Machine!'
   type = 'CHAT_INPUT'
   cooldown = 2
+  requiredRole = 984278979257184286n;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     await interaction.deferReply()
@@ -36,13 +37,6 @@ export class Claw extends Command {
       })
       return new Promise((resolve, reject) => {
         resolve(new LogResult(true, LogStatus.Warn, 'Game has ended response sent successfully'))
-      })
-    } else if (!await user.checkRole(984278979257184286n, interaction)) {
-      await interaction.followUp({
-        content: 'You don\'t have permission the play the game'
-      })
-      return new Promise((resolve, reject) => {
-        resolve(new LogResult(true, LogStatus.Warn, 'User had insignifficant permissions'))
       })
     } else if (gameState.getActive() === true) {
       try {

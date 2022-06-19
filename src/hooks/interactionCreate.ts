@@ -3,7 +3,6 @@ import { MenuSelects } from '../menuSelectList'
 import { User } from '../classes/user'
 import { Commands } from '../commandList'
 import { ButtonInteractions } from '../buttonList'
-import { DiscordUtil } from '../util/discordUtil'
 
 export default (client: Client): void => {
   client.on('interactionCreate', async (interaction: Interaction) => {
@@ -25,17 +24,7 @@ const handleSlashCommand = async (client: Client, interaction: BaseCommandIntera
   }
 
   try {
-    // if user is trying to create a profile, we should not try to get a profile (cause it dont exist)
-    if (interaction.commandName === 'profile' && DiscordUtil.checkOption(interaction, 'create')) {
-      slashCommand.execute(client, interaction, undefined)
-    } else {
-      const user = await User.getByDiscordId(interaction.user.id)
-      if (interaction.commandName === 'CommandThatRequiresPermissions' && !await user.checkRole(0n, interaction)) {
-        interaction.reply({ ephemeral: true, content: 'YOU DONT HAVE THE RIGHT PERMISSIONS' })
-      } else {
-        slashCommand.execute(client, interaction, user)
-      }
-    }
+    slashCommand.execute(client, interaction)
   } catch (err) {
     getUserIssue(interaction, err)
   }

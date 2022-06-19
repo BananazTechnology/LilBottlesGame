@@ -23,6 +23,7 @@ export abstract class SubCommand implements ApplicationCommandSubCommandData, In
         return this.run(client, interaction, user)
       } else {
         interaction.reply({
+          ephemeral: true,
           content: 'You dont have a profile yet! Use /profile create!'
         })
         return new Promise((resolve, reject) => {

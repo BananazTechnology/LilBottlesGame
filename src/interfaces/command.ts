@@ -35,6 +35,7 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
         return
       } else {
         interaction.reply({
+          ephemeral: true,
           content: 'You dont have a profile yet! Use /profile create!'
         })
         result = new LogResult(true, LogStatus.Warn, 'Command not run. User has no profile.')
@@ -48,9 +49,12 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
       const hasRole: boolean = await user.checkRole(this.requiredRole, interaction)
       if (!hasRole) {
         interaction.reply({
+          ephemeral: true,
           content: 'Smokey the Bear says \'Only YOU can prevent forest fires!\'. Also, you dont have enough permissions for this command. Go water a tree or something.'
         })
         result = new LogResult(false, LogStatus.Warn, 'Player does not have required role')
+        console.log(`${user.getDiscordName()} ran ${this.name}: ${result.message}`);
+        (await log).complete(result)
         return
       }
     }
@@ -66,9 +70,12 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
 
           if (cooldownNumber - currentNumber > 0) {
             interaction.reply({
+              ephemeral: true,
               content: `Easy there hotpocket, your cooldown aint over! You can run this command again <t:${((Number(Date.parse(timestamp)) / 1000) + (this.cooldown * 60))}:R>`
             })
             result = new LogResult(false, LogStatus.Warn, 'Player has not reached cooldown')
+            console.log(`${user.getDiscordName()} ran ${this.name}: ${result.message}`);
+            (await log).complete(result)
             return
           }
         }
@@ -82,8 +89,10 @@ export abstract class Command implements ChatInputApplicationCommandData, Intera
 
   private async runCmd (client: Client, interaction: any, user: User|undefined) {
     return await this.run(client, interaction, user)
-      .catch(() => {
+      .catch((err) => {
+        console.log(err)
         interaction.followUp({
+          ephemeral: true,
           content: 'Jeepers Creepers! You done broke it! We\'ll look into the issue'
         })
         return new LogResult(false, LogStatus.Incomplete, 'Error in command')

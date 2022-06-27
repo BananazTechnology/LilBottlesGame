@@ -78,7 +78,7 @@ export class Claw extends Command {
 
           const title = result.getResult()
           embed.setTitle(Boolean(title) === true ? 'CONGRATS!' : 'SORRY! COME BACK SOON!');
-          embed.setThumbnail(Boolean(title) === true ? `https://raw.githubusercontent.com/BananazTechnology/client-assets/main/lilBottles/claw_near.png` : `https://raw.githubusercontent.com/BananazTechnology/client-assets/main/lilBottles/claw_far.png`);
+          embed.setThumbnail(`https://raw.githubusercontent.com/BananazTechnology/client-assets/main/lilBottles/claw_thumbnail_branded.png`);
 
           console.log(JSON.stringify(result))
 

@@ -94,7 +94,7 @@ export class User {
   }
 
   // gets user by discord id. Also checks basic data to ensure records match discord and updates if not
-  static async getByDiscordId (discordID: string, interaction?: BaseCommandInteraction): Promise<User> {
+  static async getByDiscordId (discordID: string, interaction?: BaseCommandInteraction): Promise<User|undefined> {
     const reqURL = `${process.env.userAPI}/user/getByDiscord/${discordID}`
     console.debug(`Request to UserAPI: GET - ${reqURL}`)
 
@@ -118,7 +118,7 @@ export class User {
               resolve(user)
             }
           } else {
-            reject(new Error('No User Found'))
+            resolve(undefined)
           }
         })
         .catch(err => {

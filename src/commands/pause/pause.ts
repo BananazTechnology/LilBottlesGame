@@ -9,6 +9,7 @@ export class Pause extends Command {
   name = 'pause'
   description = 'Unplug the Claw Machine for a little bit'
   type = 'CHAT_INPUT'
+  requiredRole = 964999297923960846n;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     const gameState = await GameState.getGameState()

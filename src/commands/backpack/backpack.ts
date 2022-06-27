@@ -10,6 +10,7 @@ export class Backpack extends Command {
   name = 'backpack'
   description = 'check what items you have already collected!'
   type = 'CHAT_INPUT'
+  requiredRole = 964999297923960843n;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     try {

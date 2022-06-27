@@ -14,6 +14,8 @@ export class Profile extends Command {
   description = 'Profile Command'
   type = 'CHAT_INPUT'
   options: SubCommand[] = [new Create(), new View(), new Other(), new Edit()]
+  userRequired = false;
+  requiredRole = 964999297923960843n;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     return new Promise((resolve, reject) => {

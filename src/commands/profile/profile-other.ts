@@ -30,6 +30,19 @@ export class Other extends SubCommand {
       try {
         const user = await User.getByDiscordId(id)
 
+        if (!user) {
+          const content = 'User doesnt have an account yet!'
+
+          await interaction.followUp({
+            ephemeral: true,
+            content
+          })
+
+          return new Promise((resolve, reject) => {
+            reject(new LogResult(false, LogStatus.Error, 'General Profile Other Command Error'))
+          })
+        }
+
         const embed = new MessageEmbed()
           .setColor('#FFA500')
           .setTitle(`Profile: ${user.getDiscordName()}`)
@@ -46,10 +59,10 @@ export class Other extends SubCommand {
         })
 
         return new Promise((resolve, reject) => {
-          resolve(new LogResult(true, LogStatus.Success, 'Permit Other completed Successfully'))
+          resolve(new LogResult(true, LogStatus.Success, 'Profile Other completed Successfully'))
         })
       } catch (err) {
-        const content = 'You dont have a permit yet! Use /profile create!'
+        const content = 'THere was an issues with the id provided'
 
         await interaction.followUp({
           ephemeral: true,
@@ -57,11 +70,11 @@ export class Other extends SubCommand {
         })
 
         return new Promise((resolve, reject) => {
-          reject(new LogResult(false, LogStatus.Error, 'General Permit Other Command Error'))
+          reject(new LogResult(false, LogStatus.Error, 'General Profile Other Command Error'))
         })
       }
     } else {
-      const content = 'You dont have a permit yet! Use /profile create!'
+      const content = 'You dont have a profile yet! Use /profile create!'
 
       await interaction.followUp({
         ephemeral: true,

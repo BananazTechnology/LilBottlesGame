@@ -15,7 +15,8 @@ export abstract class Select implements ApplicationCommandSubCommandData, Intera
 
   abstract run: (client: Client, interaction: SelectMenuInteraction, user: User|undefined) => void;
 
-  execute (client: Client, interaction: SelectMenuInteraction, user: User|undefined) {
+  async execute (client: Client, interaction: SelectMenuInteraction) {
+    const user = await User.getByDiscordId(interaction.user.id)
     this.run(client, interaction, user)
   }
 }

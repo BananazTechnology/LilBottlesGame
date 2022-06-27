@@ -17,6 +17,8 @@ export class Create extends SubCommand {
   description = 'Create a new profile'
   type = 'SUB_COMMAND'
   options = [wallet]
+  userRequired = false;
+
   async run (client: Client, interaction: BaseCommandInteraction): Promise<LogResult> {
     await interaction.deferReply({ ephemeral: true })
 

@@ -9,6 +9,7 @@ export class Help extends Command {
   name = 'help'
   description = 'Displays all commands'
   type = 'CHAT_INPUT'
+  userRequired = false;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     try {

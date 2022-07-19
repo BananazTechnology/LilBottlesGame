@@ -20,10 +20,13 @@ export class Backpack extends Command {
         const inventory = await InventoryItem.getInventory(user.getId())
         const totalItems = await GameResult.getCount();
         const embed1 = new MessageEmbed()
-                .setColor('#FFA500');
+          .setColor('#FFA500');
 
         const embed2 = new MessageEmbed()
-                .setColor('#FFA500');
+          .setColor('#FFA500');
+        
+        const embed3 = new MessageEmbed()
+          .setColor('#FFA500');
 
         if(inventory){
             for(let i = 0; i < totalItems; i++) {
@@ -34,8 +37,12 @@ export class Backpack extends Command {
                         embed1.addField('\u200b',`${item.getEmote()}\n`, true);
                         exists = true;
                       }
-                      if(i > 23 ) {
+                      if(i > 23 && i < 48 ) {
                         embed2.addField('\u200b',`${item.getEmote()}\n`, true);
+                        exists = true;
+                      }
+                      if(i > 47 ) {
+                        embed3.addField('\u200b',`${item.getEmote()}\n`, true);
                         exists = true;
                       }
                     } 
@@ -43,8 +50,10 @@ export class Backpack extends Command {
                 if(exists == false) {
                   if(i < 24){
                     embed1.addField('\u200b',':question:\n', true);
-                  } if(i > 23) {
+                  } if(i > 23 && i < 48) {
                     embed2.addField('\u200b',':question:\n', true);
+                  } if(i > 47 ) {
+                    embed3.addField('\u200b',':question:\n', true);
                   }
                     
                 }
@@ -52,7 +61,7 @@ export class Backpack extends Command {
         }
 
         await interaction.followUp({
-            embeds: [embed1,embed2]
+            embeds: [embed1,embed2, embed3]
         })
     }
 

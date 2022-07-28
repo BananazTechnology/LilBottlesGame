@@ -22,46 +22,31 @@ export class Backpack extends Command {
         const embed1 = new MessageEmbed()
           .setColor('#FFA500');
 
-        const embed2 = new MessageEmbed()
-          .setColor('#FFA500');
-        
-        const embed3 = new MessageEmbed()
-          .setColor('#FFA500');
-
         if(inventory){
+          let desc;
+          let counter = 0;
             for(let i = 0; i < totalItems; i++) {
-                let exists = false;
+              let exists = false;
+              counter++;
+              if(counter = 5){
+                counter = 0;
+                desc = desc + '\n';
+              }
                 for( let item of inventory){
                     if(item.getItemID() == i){
-                      if(i < 24 ) {
-                        embed1.addField('\u200b',`${item.getEmote()}\n`, true);
+                      desc = `$${desc}   ${item.getEmote()}`
+                        //embed1.addField('\u200b',`${item.getEmote()}\n`, true);
                         exists = true;
-                      }
-                      if(i > 23 && i < 48 ) {
-                        embed2.addField('\u200b',`${item.getEmote()}\n`, true);
-                        exists = true;
-                      }
-                      if(i > 47 ) {
-                        embed3.addField('\u200b',`${item.getEmote()}\n`, true);
-                        exists = true;
-                      }
                     } 
                 }
-                if(exists == false) {
-                  if(i < 24){
-                    embed1.addField('\u200b',':question:\n', true);
-                  } if(i > 23 && i < 48) {
-                    embed2.addField('\u200b',':question:\n', true);
-                  } if(i > 47 ) {
-                    embed3.addField('\u200b',':question:\n', true);
-                  }
-                    
+                if(exists == false){
+                  desc = `$${desc}   :question:`;
                 }
             }
         }
 
         await interaction.followUp({
-            embeds: [embed1,embed2, embed3]
+            embeds: [embed1]
         })
     }
 

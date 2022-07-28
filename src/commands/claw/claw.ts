@@ -15,7 +15,7 @@ export class Claw extends Command {
   name = 'claw'
   description = 'Try your chances at the Little Bottles Claw Machine!'
   type = 'CHAT_INPUT'
-  cooldown = 2
+  cooldown = 1
   requiredRole = 964999297923960843n;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {

@@ -29,7 +29,7 @@ export class Backpack extends Command {
           .setColor('#FFA500');
 
         if(inventory){
-            for(let i = 0; i < totalItems; i++) {
+            for(let i = 1; i <= totalItems; i++) {
                 let exists = false;
                 for( let item of inventory){
                     if(item.getItemID() == i){

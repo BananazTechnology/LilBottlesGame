@@ -48,11 +48,11 @@ export class Backpack extends Command {
                     } 
                 }
                 if(exists == false) {
-                  if(i < 24){
+                  if(i < 25){
                     embed1.addField('\u200b',':question:\n', true);
-                  } if(i > 23 && i < 48) {
+                  } if(i > 24 && i < 49) {
                     embed2.addField('\u200b',':question:\n', true);
-                  } if(i > 47 ) {
+                  } if(i > 48 ) {
                     embed3.addField('\u200b',':question:\n', true);
                   }
                     

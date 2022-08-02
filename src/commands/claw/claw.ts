@@ -41,12 +41,12 @@ export class Claw extends Command {
       })
     } else if (gameState.getActive() === true) {
       try {
-        const dropScale = Number(process.env.DROPSCALE)
+        const dropScale = 10;//Number(process.env.DROPSCALE)
         const randNum = Math.floor(Math.random() * dropScale)
         let result
 
         // win
-        if (randNum === (dropScale - 1)) {
+        if (randNum < 4) {
           result = await GameResult.getGameResult(true)
           if (result) {
             console.log(result.getResult())

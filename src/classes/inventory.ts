@@ -78,8 +78,8 @@ export class InventoryItem {
     let queryString = `
     SELECT * FROM winners as w WHERE w.userID = ${user.getId()}`
     let result = await dbQuery(queryString)
-    if(!(<RowDataPacket> result)[0]) {
-        console.log('aint won before');
+    // if(!(<RowDataPacket> result)[0]) {
+    //     console.log('aint won before');
         queryString = `
         SELECT * FROM inventory i
             JOIN clawMachineOutput cm on i.itemId = cm.id
@@ -95,8 +95,9 @@ export class InventoryItem {
             if(fullInventory.filter(e => e.getItemID() === item.getItemID()).length == 0)
             fullInventory.push(item);
             } 
-            console.log(`${fullInventory.length} out of ${await GameResult.getCount()}`);
-            if(fullInventory.length == await GameResult.getCount()) {
+            const count = await GameResult.getCount();
+            console.log(`${fullInventory.length} out of ${count}`);
+            if(fullInventory.length == count) {
                 resolve(true)
             } else {
             resolve(false)
@@ -105,13 +106,14 @@ export class InventoryItem {
             reject(new Error('DB Connection OR Query Issue'))
         }
         })
-    } else {
-    console.log('already won');
-    return new Promise(async (resolve, reject) => {
-        resolve(false)
-    })
-    }
-  }
+    } 
+    // else {
+    // console.log('already won');
+    // return new Promise(async (resolve, reject) => {
+    //     resolve(false)
+    // })
+    // }
+  //}
 
   static async insertInventory (userID: number, itemID: number): Promise<InventoryItem|undefined> {
     const queryString = `
@@ -129,6 +131,27 @@ export class InventoryItem {
           resolve(item)
         } else {
           resolve(undefined)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
+  }
+
+
+  static async clearInventory (userID: number): Promise<Boolean> {
+    const queryString = `
+      DELETE FROM inventory WHERE userID = ${userID}`
+
+    const result = await dbQuery(queryString)
+
+    return new Promise((resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)
+        if(row) {
+          resolve(true)
+        } else {
+          resolve(false)
         }
       } catch {
         reject(new Error('DB Connection OR Query Issue'))

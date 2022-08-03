@@ -17,11 +17,13 @@ export class Claw extends Command {
   type = 'CHAT_INPUT'
   cooldown = 1
   requiredRole = 964999297923960843n;
+  //requiredRole = 984278979257184286n; //dev;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     await interaction.deferReply()
 
     const gameState = await GameState.getGameState()
+    let secondEmbed = false;
 
     if (!gameState || !user) {
       await interaction.followUp({
@@ -53,6 +55,8 @@ export class Claw extends Command {
             InventoryItem.insertInventory(user.getId(),result.getId())
             if(await InventoryItem.checkWinner(user) == true){
               User.createWinner(user)
+              InventoryItem.clearInventory(user.getId())
+              secondEmbed = true;
             }
           } else {
           }
@@ -82,10 +86,19 @@ export class Claw extends Command {
 
           console.log(JSON.stringify(result))
 
-          await interaction.followUp({
-            embeds: [embed]
-          })
-
+          if(secondEmbed){
+           const embed2 = new MessageEmbed()
+           .setColor('#FFA500')
+           .setTitle('CONGRATS YOU HAVE EARNED YOUR SPOT ON THE ALLOWLIST')
+           .setDescription('YOUR PROGRESS HAS BEEN RESET SO YOU CAN GO AGAIN!');
+            await interaction.followUp({
+              embeds: [embed,embed2]
+            })
+          } else {
+            await interaction.followUp({
+              embeds: [embed]
+            })
+          }
           return new Promise((resolve, reject) => {
             resolve(new LogResult(true, LogStatus.Success, 'Claw Command Completed Successfully'))
           })

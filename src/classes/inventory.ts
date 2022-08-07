@@ -74,46 +74,46 @@ export class InventoryItem {
   }
 
   static async checkWinner (user: User): Promise<boolean> {
-
     let queryString = `
     SELECT * FROM winners as w WHERE w.userID = ${user.getId()}`
     let result = await dbQuery(queryString)
     // if(!(<RowDataPacket> result)[0]) {
     //     console.log('aint won before');
-        queryString = `
+    queryString = `
         SELECT * FROM inventory i
             JOIN clawMachineOutput cm on i.itemId = cm.id
             WHERE i.userID = ${user.getId()}`
-        result = await dbQuery(queryString)
+    result = await dbQuery(queryString)
 
-        return new Promise(async (resolve, reject) => {
-        try {
-            const row = (<RowDataPacket> result)
-            let fullInventory : InventoryItem[]= [];
-            for(var i = 0; i < row.length ; i++) {
-            const item: InventoryItem = new InventoryItem(row[i].id, row[i].userID, row[i].itemID, row[i].emote)
-            if(fullInventory.filter(e => e.getItemID() === item.getItemID()).length == 0)
-            fullInventory.push(item);
-            } 
-            const count = await GameResult.getCount();
-            console.log(`${fullInventory.length} out of ${count}`);
-            if(fullInventory.length == count) {
-                resolve(true)
-            } else {
-            resolve(false)
-            }
-        } catch {
-            reject(new Error('DB Connection OR Query Issue'))
+    return new Promise(async (resolve, reject) => {
+      try {
+        const row = (<RowDataPacket> result)
+        const fullInventory : InventoryItem[] = []
+        for (let i = 0; i < row.length; i++) {
+          const item: InventoryItem = new InventoryItem(row[i].id, row[i].userID, row[i].itemID, row[i].emote)
+          if (fullInventory.filter(e => e.getItemID() === item.getItemID()).length === 0) {
+            fullInventory.push(item)
+          }
         }
-        })
-    } 
-    // else {
-    // console.log('already won');
-    // return new Promise(async (resolve, reject) => {
-    //     resolve(false)
-    // })
-    // }
-  //}
+        const count = await GameResult.getCount()
+        console.log(`${fullInventory.length} out of ${count}`)
+        if (fullInventory.length === count) {
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      } catch {
+        reject(new Error('DB Connection OR Query Issue'))
+      }
+    })
+  }
+  // else {
+  // console.log('already won');
+  // return new Promise(async (resolve, reject) => {
+  //     resolve(false)
+  // })
+  // }
+  // }
 
   static async insertInventory (userID: number, itemID: number): Promise<InventoryItem|undefined> {
     const queryString = `

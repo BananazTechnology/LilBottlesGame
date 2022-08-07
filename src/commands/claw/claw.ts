@@ -55,7 +55,8 @@ export class Claw extends Command {
             InventoryItem.insertInventory(user.getId(),result.getId())
             if(await InventoryItem.checkWinner(user) == true){
               User.createWinner(user)
-              InventoryItem.clearInventory(user.getId())
+              console.log(JSON.stringify(user))
+              await InventoryItem.clearInventory(user.getId())
               secondEmbed = true;
             }
           } else {

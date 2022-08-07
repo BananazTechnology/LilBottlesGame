@@ -9,7 +9,7 @@ export class Export extends Command {
   description = 'Export winners of the Claw Machine'
   type = 'CHAT_INPUT'
   requiredRole = 964999297923960846n;
-  //requiredRole = 984278979257184286n; //dev;
+  // requiredRole = 984278979257184286n; //dev;
 
   async run (client: Client, interaction: BaseCommandInteraction, user?: User): Promise<LogResult> {
     try {

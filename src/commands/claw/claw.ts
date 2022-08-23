@@ -48,7 +48,7 @@ export class Claw extends Command {
         let result
 
         // win
-        if (randNum < 7) {
+        if (randNum < 8) {
           result = await GameResult.getGameResult(true)
           if (result) {
             console.log(result.getResult())

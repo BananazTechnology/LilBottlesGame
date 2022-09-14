@@ -165,7 +165,43 @@ export class User {
       UPDATE gameState
       set currentWinners =
       (select count(*) from winners)`
-    await dbQuery(updateString)
+    await dbQuery(updateString);
+    await this.createWinnerSheety(user);
+  }
+
+  static async createWinnerSheety (user: User) {
+
+    return new Promise((resolve, reject) => {
+      try {
+        axios
+        .post('https://api.sheety.co/29badc92871e946f32899f05274ef6e2/lilbottles/whitelist', {
+          whitelist: {
+            wallet: user.getWalletAddress(),
+            numberOfMints: 1,
+            pricePerSingleMint: '.04',
+          }
+        }, {
+          headers: {
+            "Authorization": "Bearer OhqwZYVobr"
+          }
+        })
+        .then(res => {
+          const data = res.data.data
+          if (data) {
+            console.log('Successfully sent to spreadsheet',data);
+          } else {
+            resolve(undefined)
+          }
+        })
+        .catch(err => {
+          reject(err)
+        })
+        
+        } catch (error) {
+        reject(error)
+      }
+    })
+
   }
 
   static async getWinners () {

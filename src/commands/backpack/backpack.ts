@@ -34,35 +34,22 @@ export class Backpack extends Command {
                 let exists = false;
                 for( let item of inventory){
                     if(item.getItemID() == i){
-                      if(i < 25 ) {
+                      if(i < 16 ) {
                         embed1.addField('\u200b',`${item.getEmote()}\n`, true);
-                        exists = true;
-                      }
-                      if(i > 24 && i < 49 ) {
-                        embed2.addField('\u200b',`${item.getEmote()}\n`, true);
-                        exists = true;
-                      }
-                      if(i > 48 ) {
-                        embed3.addField('\u200b',`${item.getEmote()}\n`, true);
                         exists = true;
                       }
                     } 
                 }
                 if(exists == false) {
-                  if(i < 25){
+                  if(i < 16){
                     embed1.addField('\u200b',':question:\n', true);
-                  } if(i > 24 && i < 49) {
-                    embed2.addField('\u200b',':question:\n', true);
-                  } if(i > 48 ) {
-                    embed3.addField('\u200b',':question:\n', true);
-                  }
-                    
+                  }  
                 }
             }
         }
 
         await interaction.followUp({
-            embeds: [embed1,embed2, embed3]
+            embeds: [embed1]
         })
     }
 
